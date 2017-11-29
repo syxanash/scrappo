@@ -3,10 +3,14 @@
   (:require [net.cgrand.enlive-html :as html]
             [org.httpkit.client :as http]))
 
+(defn extract-content-div
+  [dom]
+  (comp first :content) (html/select dom [:div#content]))
+
 (defn get-dom
   ([website]
     (html/html-snippet
-      (:body @(http/get website {:insecure? false}))))
+      (:body @(http/get website {:insecure? true}))))
   ([] "please give me a website to read"))
 
 (defn -main
@@ -14,5 +18,5 @@
   [& args]
   (println
     (if (> (count args) 0)
-      (get-dom (first args))
+      (extract-content-div (get-dom (first args)))
       (get-dom))))
